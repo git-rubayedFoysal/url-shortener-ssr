@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener - Signup</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>User Signup</h1>
+        <form action="/user" method="post">
+            <div class="name-container">
+                <label for="name">Enter Fullname: </label>
+                <input type="text" name="name" id="name" placeholder="Jhon Doe">
+            </div>
+
+            <div class="email-container">
+                <label for="email">Enter Email Address: </label>
+                <input type="text" name="email" id="email" placeholder="jhohdoe@gmail.com">
+            </div>
+
+            <div class="password-container">
+                <label for="pass">Enter Password: </label>
+                <input type="password" name="password" id="pass" placeholder="........">
+            </div>
+
+            <button type="submit">Signup</button>
+        </form>
+
+        <p class="noAccount">Already have an account?
+            <a href="/login">Log in</a>
+        </p>
+    </div>
+</body>
+
+</html>

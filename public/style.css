@@ -1,0 +1,332 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: #1e1e1e;
+  color: #fff;
+  min-height: 90vh;
+  padding: 20px;
+}
+
+.container {
+  width: 55%;
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 32px;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding-bottom: 8px;
+  border-bottom: 3px solid seagreen;
+}
+
+/* ===== Header ===== */
+.header {
+  text-align: center;
+}
+
+/* ===== Logout Button (fixed top-right) ===== */
+a.logout {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  padding: 8px 20px;
+  background-color: #1e1e1e;
+  border: 1px solid #a04b4b;
+  border-radius: 20px;
+  color: #e07a7a;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+a.logout:hover {
+  background-color: rgba(160, 75, 75, 0.15);
+  border-color: #e07a7a;
+  color: #ff9d9d;
+}
+
+/* ===== Form ===== */
+form {
+  width: 60%;
+  background-color: #2e2e2e;
+  border: 2px solid #3a3a3a;
+  border-radius: 10px;
+  margin: 25px auto 0;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.url-container,
+.name-container,
+.email-container,
+.password-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+label {
+  font-weight: 700;
+  font-size: 15px;
+  color: #d4d4d4;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 2px solid #3a3a3a;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input:focus {
+  border-color: seagreen;
+}
+
+input::placeholder {
+  color: #6f6f6f;
+}
+
+button {
+  margin-top: 15px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: seagreen;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+button:hover {
+  background-color: #37a26a;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* ===== Output ===== */
+.output {
+  width: 60%;
+  background-color: #2e2e2e;
+  border: 2px solid seagreen;
+  border-radius: 10px;
+  margin: 15px auto 0;
+  padding: 18px 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.output h3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: #d4d4d4;
+}
+
+.output a {
+  display: inline-block;
+  padding: 8px 14px;
+  background-color: #1e1e1e;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  color: #6ee7a0;
+  font-size: 14px;
+  text-decoration: none;
+  word-break: break-all;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.output a:hover {
+  border-color: seagreen;
+  color: #fff;
+}
+
+/* ===== Return Home Button ===== */
+.output a.return {
+  margin-top: 15px;
+  padding: 10px 22px;
+  background-color: transparent;
+  border: 1px solid #6f6f6f;
+  border-radius: 20px;
+  color: #d4d4d4;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  word-break: normal;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.output a.return::before {
+  content: "← ";
+  font-weight: 700;
+}
+
+.output a.return:hover {
+  border-color: #6ee7a0;
+  color: #6ee7a0;
+  background-color: rgba(46, 139, 87, 0.1);
+}
+
+.output a.return:active {
+  transform: scale(0.97);
+}
+
+/* ===== Auth Required ===== */
+.output.auth-required {
+  border-color: #d9a036;
+  background: linear-gradient(145deg, #2e2e2e, #342a1a);
+}
+
+.output.auth-required h3 {
+  color: #e8c877;
+}
+
+.output a.login {
+  padding: 8px 20px;
+  background-color: #d9a036;
+  border: none;
+  border-radius: 8px;
+  color: #1e1e1e;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  word-break: normal;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.output a.login:hover {
+  background-color: #e8b24c;
+  color: #1e1e1e;
+  transform: scale(1.03);
+}
+
+.output a.login:active {
+  transform: scale(0.97);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #d4d4d4;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+  color: #9a9a9a;
+  max-width: 380px;
+  line-height: 1.6;
+}
+
+/* ===== Analytics Table ===== */
+#analytics {
+  width: 100%;
+  margin-top: 30px;
+  overflow-x: auto;
+  border: 2px solid #3a3a3a;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+#analytics table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#analytics th,
+#analytics td {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+#analytics th {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+#analytics td {
+  color: #d4d4d4;
+}
+
+#analytics tbody tr:hover {
+  background-color: #3a3a3a;
+}
+
+#analytics tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#analytics td[title] {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+#analytics tbody tr:first-child td:first-child {
+  color: seagreen;
+  font-weight: 700;
+}
+
+.noAccount {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.noAccount > a {
+  color: #37a26a;
+  text-decoration: none;
+}
+
+.noAccount > a:hover {
+  text-decoration: underline;
+  transition: all 0.5s ease-in-out;
+}

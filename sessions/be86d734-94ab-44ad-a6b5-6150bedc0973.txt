@@ -1,0 +1,1 @@
+{"_id":"6aa6126064062aa4ceecbe14","name":"Rubayed Ahmed Foysal","email":"rubayed2017@gmail.com","password":"123456","createdAt":"2026-09-13T03:02:56.309Z","updatedAt":"2026-09-13T03:02:56.309Z","__v":0}
