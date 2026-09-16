@@ -1,9 +1,14 @@
 import express from "express";
 import URL from "../models/url.js";
-import { deleteSession } from "../utils/auth.js";
 
 const router = express.Router();
 
+/**
+ * GET / — Home page.
+ * Shows the URL shortener form.
+ * If logged in: shows the user's shortened URLs list.
+ * If not logged in: shows "Authentication Required" message.
+ */
 router.get("/", async (req, res, next) => {
   try {
     const user = req.user; // set by getAuthUser middleware
@@ -14,6 +19,7 @@ router.get("/", async (req, res, next) => {
       });
     }
 
+    // Fetch only URLs created by this user, newest first
     const allUrls = await URL.find({ createdBy: req.user._id }).sort({
       createdAt: -1,
     });
@@ -27,24 +33,24 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// GET /signup — Render the registration form
 router.get("/signup", (req, res) => {
   return res.render("signup");
 });
 
+// GET /login — Render the login form
 router.get("/login", (req, res) => {
   return res.render("login");
 });
 
+// GET /logout — Clear JWT cookie and redirect to home
 router.get("/logout", async (req, res) => {
-  const sessionId = req.cookies.sessionId;
+  const token = req.cookies?.token;
 
-  if (!sessionId) return res.render("login");
+  if (!token) return res.render("login");
 
-  const success = await deleteSession(sessionId);
-
-  if (success) {
-    res.clearCookie("sessionId");
-    res.redirect("/");
-  }
+  // Clear the JWT cookie (path must match the path used when setting it)
+  res.clearCookie("token", { path: "/" });
+  res.redirect("/");
 });
 export default router;

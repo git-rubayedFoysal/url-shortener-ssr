@@ -1,45 +1,41 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+import jwt from "jsonwebtoken";
 
-export const setSession = async (sessionId, user) => {
+/**
+ * Signs a JWT access token with user data.
+ * Token expires in 30 days.
+ * @param {Object} user - Mongoose user document (must have _id, email, name)
+ * @returns {string|null} Signed JWT token, or null on error
+ */
+export const setToken = (user) => {
   try {
-    const filePath = path.resolve("sessions", `${sessionId}.txt`);
+    const token = jwt.sign(
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+      },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "30d",
+      },
+    );
 
-    const newFile = await fs.open(filePath, "wx");
-
-    await newFile.writeFile(JSON.stringify(user));
-
-    await newFile.close();
-
-    return true;
+    return token;
   } catch (error) {
-    return false;
+    return null;
   }
 };
 
-export const getSession = async (sessionId) => {
+/**
+ * Verifies a JWT token and returns the decoded user payload.
+ * @param {string} token - JWT token to verify
+ * @returns {Object|false} Decoded payload { _id, email, name, iat, exp }, or false on invalid/expired token
+ */
+export const getUser = (token) => {
   try {
-    const filePath = path.resolve("sessions", `${sessionId}.txt`);
-
-    const file = await fs.open(filePath, "r");
-
-    const data = await file.readFile("utf8");
-
-    await file.close();
-
-    return JSON.parse(data);
-  } catch (error) {
-    return false;
-  }
-};
-
-export const deleteSession = async (sessionId) => {
-  try {
-    const filePath = path.resolve("sessions", `${sessionId}.txt`);
-
-    await fs.unlink(filePath);
-
-    return true;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const user = decoded;
+    return user;
   } catch (error) {
     return false;
   }

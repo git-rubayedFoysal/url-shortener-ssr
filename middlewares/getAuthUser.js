@@ -1,13 +1,20 @@
-import { getSession } from "../utils/auth.js";
+import { getUser } from "../utils/auth.js";
 
-const getAuthUser = async (req, res, next) => {
-  const sessionId = req.cookies.sessionId;
+/**
+ * Soft authentication gate.
+ * Optionally detects a logged-in user but never blocks the request.
+ * Used on public routes (e.g., /) so the page renders differently
+ * for authenticated vs anonymous users.
+ */
+const getAuthUser = (req, res, next) => {
+  const token = req.cookies?.token;
 
-  const user = await getSession(sessionId);
+  const user = getUser(token);
 
   if (user) {
     req.user = user;
   }
+  // Always calls next() — unauthenticated users are not blocked
   next();
 };
 
