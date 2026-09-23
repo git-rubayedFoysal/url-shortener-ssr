@@ -67,14 +67,10 @@ router.get("/login", (req, res) => {
   return res.render("login");
 });
 
-// GET /logout — Clear JWT cookie and redirect to home
-router.get("/logout", async (req, res) => {
-  const token = req.cookies?.token;
-
-  if (!token) return res.render("login");
-
-  // Clear the JWT cookie (path must match the path used when setting it)
+// GET /logout — Clear both auth cookies (access + refresh) and redirect home
+router.get("/logout", (req, res) => {
   res.clearCookie("token", { path: "/" });
-  res.redirect("/");
+  res.clearCookie("refreshToken", { path: "/" });
+  return res.redirect("/");
 });
 export default router;

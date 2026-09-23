@@ -16,7 +16,10 @@ export const checkAuthentication = (req, res, next) => {
   }
 
   const user = getUser(token);
-  req.user = user;
+
+  // A refresh token must never authenticate normal requests —
+  // only POST /user/refresh accepts cookies.refreshToken.
+  req.user = user && user.type === "refresh" ? false : user;
   return next();
 };
 
