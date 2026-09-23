@@ -58,6 +58,9 @@
                                                 <th>ShortID</th>
                                                 <th>Redirect</th>
                                                 <th>Clicks</th>
+                                                <% if (locals.showOwner) { %>
+                                                    <th>Created By</th>
+                                                    <% } %>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -75,6 +78,12 @@
                                                     <td>
                                                         <%= url.visitedHistory.length %>
                                                     </td>
+                                                    <% if (locals.showOwner) { %>
+                                                        <td>
+                                                            <%= url.createdBy?.name ?? "Unknown" %><br>
+                                                            <small><%= url.createdBy?.email ?? "" %></small>
+                                                        </td>
+                                                        <% } %>
                                                 </tr>
                                                 <% }) %>
                                         </tbody>

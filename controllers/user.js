@@ -1,10 +1,13 @@
-import { nextTick } from "process";
 import User from "../models/user.js";
-import { v4 as uuidV4 } from "uuid";
-import { setSession } from "../utils/auth.js";
+import byCrypt from "bcrypt";
+import { setToken } from "../utils/auth.js";
 
 const user = {};
 
+/**
+ * POST /user/ — Register a new user.
+ * Creates the account and auto-logs in by setting a JWT cookie.
+ */
 user.handleUserSignup = async (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -13,15 +16,31 @@ user.handleUserSignup = async (req, res, next) => {
   }
 
   try {
+    const hashPassword = await byCrypt.hash(password, 10);
+
     const user = await User.create({
       name,
       email,
-      password,
+      password: hashPassword,
     });
 
     if (!user) {
       return res.redirect("/signup");
     }
+
+    // Auto-login: generate token and set cookie so user is logged in immediately
+    const token = setToken(user);
+    if (!token) {
+      return res.redirect("/");
+    }
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
 
     return res.redirect("/");
   } catch (error) {
@@ -29,6 +48,10 @@ user.handleUserSignup = async (req, res, next) => {
   }
 };
 
+/**
+ * POST /user/login — Authenticate an existing user.
+ * Validates credentials, generates JWT, and sets cookie.
+ */
 user.handleUserLogin = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -37,22 +60,33 @@ user.handleUserLogin = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.render("login", { error: "Invalid username or password!" });
     }
 
-    const sessionId = uuidV4();
+    const isValidPassword = await byCrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.render("login", { error: "Invalid username or password!" });
+    }
 
-    const isUser = await setSession(sessionId, user);
-    if (!isUser) {
+    // Generate JWT access token
+    const token = setToken(user);
+    if (!token) {
       return res.render("login", {
         error: "Something went wrong, please try again",
       });
     }
 
-    res.cookie("sessionId", sessionId);
+    // Set cookie with security flags
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
     return res.redirect("/");
   } catch (error) {
     next(error);
