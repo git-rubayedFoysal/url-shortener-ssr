@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import byCrypt from "bcrypt";
 import { setToken } from "../utils/auth.js";
 
 const user = {};
@@ -15,11 +16,12 @@ user.handleUserSignup = async (req, res, next) => {
   }
 
   try {
-    // TODO: Hash password with bcrypt before saving
+    const hashPassword = await byCrypt.hash(password, 10);
+
     const user = await User.create({
       name,
       email,
-      password,
+      password: hashPassword,
     });
 
     if (!user) {
@@ -58,10 +60,14 @@ user.handleUserLogin = async (req, res, next) => {
   }
 
   try {
-    // TODO: Replace with User.findOne({ email }) + bcrypt.compare()
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
 
     if (!user) {
+      return res.render("login", { error: "Invalid username or password!" });
+    }
+
+    const isValidPassword = await byCrypt.compare(password, user.password);
+    if (!isValidPassword) {
       return res.render("login", { error: "Invalid username or password!" });
     }
 

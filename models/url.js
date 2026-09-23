@@ -30,7 +30,7 @@ const urlSchema = new mongoose.Schema(
     // Reference to the user who created this short URL
     createdBy: {
       type: mongoose.Types.ObjectId,
-      ref: "users",
+      ref: "user", // must match the registered User model name in models/user.js
     },
   },
   { timestamps: true },

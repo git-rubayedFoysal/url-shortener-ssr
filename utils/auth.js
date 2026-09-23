@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 /**
  * Signs a JWT access token with user data.
  * Token expires in 30 days.
- * @param {Object} user - Mongoose user document (must have _id, email, name)
+ * @param {Object} user - Mongoose user document (must have _id, email, name, role)
  * @returns {string|null} Signed JWT token, or null on error
  */
 export const setToken = (user) => {
@@ -13,6 +13,7 @@ export const setToken = (user) => {
         _id: user._id,
         email: user.email,
         name: user.name,
+        role: user.role,
       },
       process.env.JWT_SECRET_KEY,
       {
@@ -29,7 +30,7 @@ export const setToken = (user) => {
 /**
  * Verifies a JWT token and returns the decoded user payload.
  * @param {string} token - JWT token to verify
- * @returns {Object|false} Decoded payload { _id, email, name, iat, exp }, or false on invalid/expired token
+ * @returns {Object|false} Decoded payload { _id, email, name, role, iat, exp }, or false on invalid/expired token
  */
 export const getUser = (token) => {
   try {

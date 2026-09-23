@@ -1,8 +1,32 @@
 import express from "express";
 import URL from "../models/url.js";
+import { restrictUser } from "../middlewares/handleAuth.js";
 
 const router = express.Router();
 
+/**
+ * GET /admin/urls — Admin dashboard.
+ * ADMIN-only (enforced by restrictUser). Lists ALL shortened URLs, newest first.
+ */
+router.get("/admin/urls", restrictUser(["ADMIN"]), async (req, res, next) => {
+  try {
+    const user = req.user; // set by checkAuthentication middleware
+
+    // Fetch all URLs, newest first, with owner name+email populated
+    // (field selection excludes password)
+    const allUrls = await URL.find({})
+      .sort({ createdAt: -1 })
+      .populate("createdBy", "name email");
+
+    return res.render("home", {
+      urls: allUrls,
+      user: { name: user.name },
+      showOwner: true, // tells home.ejs to render the "Created By" column
+    });
+  } catch (error) {
+    next(error); // let errorHandler respond instead of hanging
+  }
+});
 /**
  * GET / — Home page.
  * Shows the URL shortener form.
@@ -11,7 +35,7 @@ const router = express.Router();
  */
 router.get("/", async (req, res, next) => {
   try {
-    const user = req.user; // set by getAuthUser middleware
+    const user = req.user; // set by checkAuthentication middleware
 
     if (!user) {
       return res.render("home", {
@@ -20,7 +44,7 @@ router.get("/", async (req, res, next) => {
     }
 
     // Fetch only URLs created by this user, newest first
-    const allUrls = await URL.find({ createdBy: req.user._id }).sort({
+    const allUrls = await URL.find({ createdBy: user._id }).sort({
       createdAt: -1,
     });
 

@@ -1,9 +1,13 @@
+/**
+ * URL Shortener — application entry point.
+ * Wires middleware (cookies, body parsing, soft auth), mounts routers,
+ * registers the global error handler, and starts the server.
+ */
 import express from "express";
 import connectDB from "./connection.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import { checkAuthentication, restrictUser } from "./middlewares/handleAuth.js";
 
-import checkAuthentication from "./middlewares/checkAuthentication.js";
-import getAuthUser from "./middlewares/getAuthUser.js";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 
@@ -27,12 +31,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // --- Routes ---
+// Soft auth must run BEFORE any router: it decodes the JWT cookie into
+// req.user so restrictUser and route handlers can read it. Never blocks.
+app.use(checkAuthentication);
 // /url routes require authentication (hard gate - blocks unauthenticated users)
-app.use("/url", checkAuthentication, urlRouter);
+app.use("/url", restrictUser(["NORMAL", "ADMIN"]), urlRouter);
 // /user routes are public (signup, login - no auth required)
 app.use("/user", userRouter);
-// / routes use soft auth (optionally detects logged-in user, never blocks)
-app.use("/", getAuthUser, staticRouter);
+app.use("/", staticRouter);
 
 // Global error handler - catches unhandled errors from any route
 app.use(errorHandler);
